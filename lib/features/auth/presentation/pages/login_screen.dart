@@ -11,7 +11,7 @@ import '../../../../core/widgets/custom_button.dart';
 import '../../../language/presentation/pages/language_page.dart';
 import '../../../theme/presentation/bloc/theme_bloc.dart';
 import '../../presentation/bloc/auth_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'password_reset_screen.dart';
@@ -117,7 +117,6 @@ class LoginPage extends StatelessWidget {
                               textInputAction: TextInputAction.next,
                               hintText: AppLocalizations.of(context)!.yourEmail,
                               prefixIcon: Icons.email_outlined,
-                              
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
@@ -126,7 +125,8 @@ class LoginPage extends StatelessWidget {
                               child: PasswordTextField(
                                 controller: passwordController,
                                 textInputAction: TextInputAction.done,
-                                hintText: AppLocalizations.of(context)!.yourPassword,
+                                hintText:
+                                    AppLocalizations.of(context)!.yourPassword,
                               ),
                             ),
                             // Forgot password

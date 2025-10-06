@@ -8,7 +8,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// a back button when there is something to pop.
   final bool automaticallyImplyLeading;
 
-
   final Widget? leading;
 
   final List<Widget>? actions;
@@ -32,12 +31,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     // If the user supplied a leading widget, use it.
     // Otherwise, if we’re allowed to imply a leading and Navigator.canPop,
     // show the default back button.
-    Widget? _leading = leading;
-    if (_leading == null &&
+    Widget? resolvedLeading = leading;
+    if (resolvedLeading == null &&
         automaticallyImplyLeading &&
         Navigator.canPop(context)) {
       final backButtonColor = Theme.of(context).scaffoldBackgroundColor;
-      _leading = BackButton(
+      resolvedLeading = BackButton(
         color: backButtonColor,
       );
     }
@@ -62,7 +61,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-
     return AppBar(
       title: Text(
         title,
@@ -72,7 +70,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       backgroundColor: Theme.of(context).primaryColor,
       automaticallyImplyLeading: false,
-      leading: _leading,
+      leading: resolvedLeading,
       actions: finalActions,
     );
   }

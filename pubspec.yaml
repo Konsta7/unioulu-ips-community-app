@@ -9,12 +9,12 @@ environment:
   sdk: ">=3.4.1 <4.0.0"
 
 dependencies:
-  appwrite: ^15.0.2
+  appwrite: ^20.0.0
   bloc: ^9.0.0
   cupertino_icons: ^1.0.6
-  flutter_dotenv: ^5.2.1
+  flutter_dotenv: ^6.0.0
   equatable: ^2.0.5
-  file_picker: ^9.0.2
+  file_picker: ^10.3.3
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0
@@ -25,14 +25,14 @@ dependencies:
   fpdart: ^1.1.0
   get_it: ^8.0.3
   http: ^1.2.1
-  intl: ^0.19.0
+  intl: 0.20.2
   isar: ^3.1.0+1
   isar_flutter_libs:
     git: 
     # Using this patch library to fix the issue with isar_flutter_libs. v4 is supposed to fix this issue but it is not released yet.
       url: https://github.com/MrLittleWhite/isar_flutter_libs.git
   path_provider: ^2.1.5
-  share_plus: ^10.1.4
+  share_plus: ^12.0.0
   speech_to_text: ^7.0.0
   emoji_picker_flutter: ^4.3.0
 
@@ -47,7 +47,7 @@ dev_dependencies:
   build_runner: ^2.4.13
 
   # Linting
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
   mockito: ^5.4.4
@@ -68,7 +68,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/default_avatar.png
-    - .env
+    - appwrite/appwrite.env
 
   fonts:
     - family: Montserrat

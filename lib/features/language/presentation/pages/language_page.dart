@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/language_bloc.dart';
 import '../bloc/language_event.dart';
 import '../bloc/language_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class LanguagePage extends StatelessWidget {
   const LanguagePage({super.key});

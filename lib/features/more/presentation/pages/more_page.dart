@@ -1,7 +1,7 @@
 import 'package:community/core/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
@@ -55,7 +55,8 @@ class MorePage extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.person),
             title: const Text("Profile Management"),
-            subtitle: const Text("Edit profile, change password, delete account"),
+            subtitle:
+                const Text("Edit profile, change password, delete account"),
             onTap: () {
               Navigator.push(
                 context,

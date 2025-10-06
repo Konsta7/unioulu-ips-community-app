@@ -37,7 +37,7 @@ import 'features/language/domain/usecases/get_saved_language.dart';
 import 'core/theme/app_theme.dart';
 import 'features/language/data/models/language_model.dart';
 import 'features/theme/data/models/theme_model.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import './l10n/app_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:community/features/more/presentation/bloc/more_bloc.dart';
 
@@ -45,7 +45,7 @@ final GetIt locator = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: "appwrite/appwrite.env");
   await _initializeDatabase();
   _initializeAppwrite();
   setupLocator();

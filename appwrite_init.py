@@ -5,7 +5,7 @@ from appwrite.services.databases import Databases
 from datetime import datetime, timedelta
 import os
 
-load_dotenv()
+load_dotenv('appwrite/appwrite.env')
 
 # http://localhost/v1
 endpoint = os.getenv('APPWRITE_URL')

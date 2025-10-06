@@ -8,7 +8,7 @@ import '../../features/auth/presentation/pages/login_screen.dart';
 import '../../features/auth/presentation/pages/register_screen.dart';
 import '../../features/language/presentation/pages/language_page.dart';
 import '../../features/theme/presentation/bloc/theme_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_button.dart';
 

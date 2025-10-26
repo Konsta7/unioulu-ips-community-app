@@ -70,6 +70,15 @@ class AuthRemoteDataSource {
         email: email, url: 'https://example.com');
   }
 
+  Future<appwrite.Token> createVerification({required String url}) async {
+    try {
+      return await account.createVerification(url: url);
+    } catch (e) {
+      developer.log('Error creating verification: $e');
+      rethrow;
+    }
+  }
+
   Future<appwrite.User> getUser() async {
     return await account.get();
   }

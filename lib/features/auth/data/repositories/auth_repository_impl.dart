@@ -15,12 +15,33 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<User> register(String email, String password, String name) async {
     final appwrite.User user =
         await remoteDataSource.register(email, password, name);
+    // Send verification email right after registration
+    try {
+      await remoteDataSource.createVerification(
+          url:
+              'http://localhost:8080/verify' // Replace with your verification URL
+          );
+    } catch (e) {
+      // Log the error but don't fail registration
+      throw Exception('Failed to get current user: ${e.toString()}');
+    }
     final userModel = UserModel.fromAppwriteUser(user);
     await isar.writeTxn(() async {
       await isar.userModels.clear();
       await isar.userModels.put(userModel);
     });
     return userModel.toEntity();
+  }
+
+  Future<void> confirmVerification(String userId, String secret) async {
+    try {
+      await remoteDataSource.updateVerification(
+        userId: userId,
+        secret: secret,
+      );
+    } catch (e) {
+      throw Exception('Failed to get current user: ${e.toString()}');
+    }
   }
 
   @override
@@ -79,14 +100,12 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-Future<String> getCurrentUserName() async {
+  Future<String> getCurrentUserName() async {
     try {
       final user = await remoteDataSource.getUser();
       return user.name;
     } catch (e) {
       throw Exception('Failed to get current user: ${e.toString()}');
-      
     }
-}
-
+  }
 }

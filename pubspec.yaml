@@ -68,7 +68,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/default_avatar.png
-    - appwrite/appwrite.env
+    - appwrite/.env
 
   fonts:
     - family: Montserrat

@@ -45,7 +45,7 @@ final GetIt locator = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: "appwrite/appwrite.env");
+  await dotenv.load(fileName: "appwrite/.env");
   await _initializeDatabase();
   _initializeAppwrite();
   setupLocator();

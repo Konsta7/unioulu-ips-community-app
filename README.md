@@ -25,6 +25,17 @@ This project is built using **Flutter** for the mobile frontend and **Appwrite**
 
 To contribute to the **WeConnect**, follow these steps to set up the project locally on your machine. This guide will walk you through setting up the **Appwrite server** for backend services and **Flutter** for the mobile app.
 
+### Clone the Project
+
+
+1. Open your terminal or command prompt.
+2. Navigate to the directory where you want to store the project.
+3. Run the following command to clone the repository:
+
+```bash
+git clone https://github.com/Konsta7/unioulu-ips-community-app.git
+```
+
 ### Prerequisites
 
 Before you begin, make sure you have the following installed:
@@ -51,10 +62,10 @@ Copy the appwrite env file from https://appwrite.io/install/env and place it in 
 
 If you do not want to use Docker Compose, the appwrite docs have a guide for other methods: https://appwrite.io/docs/advanced/self-hosting
 
-After installing Docker, run the following command to start the Appwrite server:
+After installing Docker, navigate to appwrite folder in terminal and run the following command to start the Appwrite server:
 
 ```bash
-docker compose -f ./appwrite/compose.yaml up -d
+docker compose  up -d    
 ```
 For detailed instructions, refer to the [Appwrite self-hosting documentation](https://appwrite.io/docs/advanced/self-hosting) or watch the [YouTube tutorial](https://youtu.be/aO4mw8smXkI?si=8qp5IWHNkY-74J5v).
 
@@ -71,7 +82,7 @@ Adding a bucket through the Storage section is optional, but it is recommended f
 You can create an API key by following these steps:
 
 1. Go to the Appwrite Overview dashboard.
-2. Under "Integrate with your server" select "API key".
+2. Under "Integrations" select "API keys" and "Create API key".
 3. Select a name and an expiry date.
 4. Select scopes; for development purposes, you can select all scopes.
 5. Click "Create" to generate the API key.
@@ -177,20 +188,8 @@ This command will display any missing dependencies or issues that need to be res
 ---
 
 
-### 3. Clone the Project
 
-
-1. Open your terminal or command prompt.
-2. Navigate to the directory where you want to store the project.
-3. Run the following command to clone the repository:
-
-```bash
-git clone https://github.com/WalMaa/unioulu-ips-community-app.git
-```
-
----
-
-### 4. Set Up the Project
+### 3. Set Up the Project
 
 After cloning the project, follow these steps:
 
@@ -208,7 +207,7 @@ flutter pub get
 
 ---
 
-### 5. Run the Application
+### 4. Run the Application
 
 Now, you can run the Flutter app on your preferred device or emulator. Ensure your device is connected or the emulator is running, then use the following command:
 

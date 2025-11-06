@@ -35,20 +35,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ResetPasswordEvent>(_onResetPassword);
   }
 
-  void _onResetPassword(ResetPasswordEvent event, Emitter<AuthState> emit) async {
+  void _onResetPassword(
+      ResetPasswordEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       developer.log('ResetPasswordEvent: ${event.email}');
       // TODO: Make a reset password page through appwrite functions for example.
-      await account.createRecovery(email: event.email, url: "http://localhost:3000/recovery");
+      await account.createRecovery(
+          email: event.email, url: "http://localhost:3000/recovery");
 
       emit(AuthResetPasswordSuccess(message: 'Recovery email sent.'));
-
     } catch (e) {
       emit(AuthError(message: e.toString()));
     }
   }
-  
+
   void _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
@@ -78,9 +79,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       await register.execute(event.email, event.password, event.name);
-      final user = await login.execute(event.email, event.password);
-      emit(AuthAuthenticated(user: user, labels: user.labels));
-      developer.log('Register: ${user.toString()}');
     } catch (e) {
       emit(AuthError(message: e.toString()));
     }
@@ -119,7 +117,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = UserModel.fromAppwriteUser(appwriteUser).toEntity();
         emit(AuthAuthenticated(user: user, labels: user.labels));
 
-        developer.log('CheckAuthentication: ${user.email} & ${user.labels.join(',')}');
+        developer.log(
+            'CheckAuthentication: ${user.email} & ${user.labels.join(',')}');
       }
     } catch (e) {
       emit(AuthInitial());

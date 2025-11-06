@@ -25,13 +25,8 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthAuthenticated) {
-          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
-        } else if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(state.message),
-          ));
-        }
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/login', (route) => false);
       },
       child: Scaffold(
         body: SafeArea(

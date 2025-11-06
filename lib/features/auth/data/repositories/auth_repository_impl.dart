@@ -4,6 +4,7 @@ import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 import '../models/user_model.dart';
+import 'dart:developer' as developer;
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -13,18 +14,23 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User> register(String email, String password, String name) async {
+    developer.log('Starting registration for email: $email');
     final appwrite.User user =
         await remoteDataSource.register(email, password, name);
+
     // Send verification email right after registration
+    /*
     try {
       await remoteDataSource.createVerification(
           url:
-              'http://localhost:8080/verify' // Replace with your verification URL
+              'http://localhost:8080/verify-email' // Replace with your actual domain
           );
     } catch (e) {
       // Log the error but don't fail registration
       throw Exception('Failed to get current user: ${e.toString()}');
     }
+    */
+
     final userModel = UserModel.fromAppwriteUser(user);
     await isar.writeTxn(() async {
       await isar.userModels.clear();

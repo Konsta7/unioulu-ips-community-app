@@ -82,4 +82,16 @@ class AuthRemoteDataSource {
   Future<appwrite.User> getUser() async {
     return await account.get();
   }
+
+  Future<appwrite.Token> updateVerification({
+    required String userId,
+    required String secret,
+  }) async {
+    try {
+      return await account.updateVerification(userId: userId, secret: secret);
+    } catch (e) {
+      developer.log('Error updating verification: $e');
+      rethrow;
+    }
+  }
 }

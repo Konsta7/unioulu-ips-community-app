@@ -22,6 +22,7 @@ import 'features/auth/domain/usecases/logout.dart';
 import 'features/auth/domain/usecases/register.dart';
 import 'features/auth/domain/usecases/update_profile.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/pages/email_verification_page.dart';
 import 'features/auth/presentation/pages/login_screen.dart';
 import 'features/events/data/models/event_model.dart';
 import 'features/events/repository/event_repository.dart';
@@ -153,6 +154,7 @@ class MyApp extends StatelessWidget {
               '/': (context) => const MainPage(),
               '/register': (context) => RegisterPage(),
               '/login': (context) => LoginPage(),
+              '/verify-email': (context) => const EmailVerificationPage(),
             },
           );
         },

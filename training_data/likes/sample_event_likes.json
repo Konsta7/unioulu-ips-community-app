@@ -1,0 +1,22 @@
+[
+  {
+    "eventId": "event1",
+    "userId": "user_1"
+  },
+  {
+    "eventId": "event1",
+    "userId": "user_2"
+  },
+  {
+    "eventId": "event2",
+    "userId": "user_1"
+  },
+  {
+    "eventId": "event2",
+    "userId": "user_2"
+  },
+  {
+    "eventId": "event2",
+    "userId": "user_3"
+  }
+]

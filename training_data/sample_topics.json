@@ -1,0 +1,44 @@
+[
+  {
+    "id": "topic1",
+    "text_en": "Academic",
+    "text_fi": "Akateeminen",
+    "text_sv": "Akademisk",
+    "icon": "📚"
+  },
+  {
+    "id": "topic2",
+    "text_en": "Student Life",
+    "text_fi": "Opiskelijaelämä",
+    "text_sv": "Studentliv",
+    "icon": "🎓"
+  },
+  {
+    "id": "topic3",
+    "text_en": "Sports",
+    "text_fi": "Urheilu",
+    "text_sv": "Sport",
+    "icon": "🏃"
+  },
+  {
+    "id": "topic4",
+    "text_en": "Culture",
+    "text_fi": "Kulttuuri",
+    "text_sv": "Kultur",
+    "icon": "🎭"
+  },
+  {
+    "id": "topic5",
+    "text_en": "Career",
+    "text_fi": "Ura",
+    "text_sv": "Karriär",
+    "icon": "💼"
+  },
+  {
+    "id": "topic6",
+    "text_en": "Research",
+    "text_fi": "Tutkimus",
+    "text_sv": "Forskning",
+    "icon": "🔬"
+  }
+]

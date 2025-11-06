@@ -1,0 +1,31 @@
+[
+  {
+    "id": "survey1",
+    "title": "Sample Event Feedback",
+    "description": "We value your feedback! Please fill out this survey to help us improve future events.",
+    "eventId": "event1",
+    "questions": [
+      {
+        "id": "survey1q1",
+        "question": "How would you rate the event overall?",
+        "questionType": "rating",
+        "options": [],
+        "isRequired": true
+      },
+      {
+        "id": "survey1q2",
+        "question": "What did you like most about the event?",
+        "questionType": "text",
+        "options": [],
+        "isRequired": true
+      },
+      {
+        "id": "survey1q3",
+        "question": "Would you recommend this event to a friend?",
+        "questionType": "multipleChoice",
+        "options": "Yes,No,Maybe",
+        "isRequired": true
+      }
+    ]
+  }
+]

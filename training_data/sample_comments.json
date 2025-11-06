@@ -1,0 +1,23 @@
+[
+  {
+    "id": "comment1",
+    "text": "Great post about best study spots on campus!",
+    "username": "student2025",
+    "dateTime": "2025-12-03T09:00:00",
+    "postId": "samplepost1"
+  },
+  {
+    "id": "comment2",
+    "text": "Thanks for sharing this information.",
+    "username": "academicstaff",
+    "dateTime": "2025-12-03T07:00:00",
+    "postId": "samplepost2"
+  },
+  {
+    "id": "comment3",
+    "text": "5 redbulls a day is all I need.",
+    "username": "edgy_student",
+    "dateTime": "2025-12-04T04:00:00",
+    "postId": "samplepost2"
+  }
+]

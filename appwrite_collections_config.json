@@ -1,0 +1,132 @@
+[
+    {
+        "name": "Events",
+        "collection_id": "events",
+        "attributes": [
+            {"type": "string", "key": "title_en", "size": 255, "required": true},
+            {"type": "string", "key": "title_fi", "size": 255},
+            {"type": "string", "key": "title_sv", "size": 255},
+            {"type": "string", "key": "location_en", "size": 255},
+            {"type": "string", "key": "location_fi", "size": 255},
+            {"type": "string", "key": "location_sv", "size": 255},
+            {"type": "datetime", "key": "date", "required": true},
+            {"type": "string", "key": "time", "size": 25, "required": true},
+            {"type": "string", "key": "organizerName", "size": 255},
+            {"type": "string", "key": "details_en", "size": 1024},
+            {"type": "string", "key": "details_fi", "size": 1024},
+            {"type": "string", "key": "details_sv", "size": 1024},
+            {"type": "string", "key": "ticketDetails_en", "size": 1024},
+            {"type": "string", "key": "ticketDetails_fi", "size": 1024},
+            {"type": "string", "key": "ticketDetails_sv", "size": 1024},
+            {"type": "string", "key": "locationUrl", "size": 255},
+            {"type": "string", "key": "price", "size": 25},
+            {"type": "string", "key": "posterPhotoUrl", "size": 255, "required": true},
+            {"type": "string", "key": "topics", "size": 255, "required": true}
+        ]
+    },
+    {
+        "name": "EventLikes",
+        "collection_id": "event_likes",
+        "attributes": [
+            {"type": "string", "key": "eventId", "size": 255, "required": true},
+            {"type": "string", "key": "userId", "size": 255, "required": true}
+        ]
+    },
+    {
+        "name": "Topics",
+        "collection_id": "topics",
+        "attributes": [
+            {"type": "string", "key": "text_en", "size": 255, "required": true},
+            {"type": "string", "key": "text_fi", "size": 255, "required": true},
+            {"type": "string", "key": "text_sv", "size": 255, "required": true},
+            {"type": "string", "key": "icon", "size": 1024, "required": true}
+        ]
+    },
+    {
+        "name": "Posts",
+        "collection_id": "posts",
+        "attributes": [
+            {"type": "string", "key": "postTitle", "size": 255, "required": true},
+            {"type": "string", "key": "content", "size": 1024, "required": true},
+            {"type": "string", "key": "imageUrl", "size": 255},
+            {"type": "string", "key": "authorName", "size": 255, "required": true},
+            {"type": "string", "key": "authorTitle", "size": 255, "required": true},
+            {"type": "string", "key": "pollQuestion", "size": 255},
+            {"type": "string", "key": "pollOptions", "size": 1024},
+            {"type": "string", "key": "pollResult", "size": 1024}
+        ]
+    },
+    {
+        "name": "PostLikes",
+        "collection_id": "post_likes",
+        "attributes": [
+            {"type": "string", "key": "postId", "size": 255, "required": true},
+            {"type": "string", "key": "userId", "size": 255, "required": true}
+        ]
+    },
+    {
+        "name": "Comments",
+        "collection_id": "comments",
+        "attributes": [
+            {"type": "string", "key": "text", "size": 1024, "required": true},
+            {"type": "string", "key": "username", "size": 255, "required": true},
+            {"type": "datetime", "key": "dateTime", "required": true},
+            {"type": "string", "key": "postId", "size": 255, "required": true}
+        ]
+    },
+    {
+        "name": "CommentLikes",
+        "collection_id": "comment_likes",
+        "attributes": [
+            {"type": "string", "key": "commentId", "size": 255, "required": true},
+            {"type": "string", "key": "userId", "size": 255, "required": true}
+        ]
+    },
+    {
+        "name": "Announcements",
+        "collection_id": "announcements",
+        "attributes": [
+            {"type": "string", "key": "title", "size": 255, "required": true},
+            {"type": "string", "key": "content", "size": 1024, "required": true},
+            {"type": "datetime", "key": "date", "required": true}
+        ]
+    },
+    {
+        "name": "Surveys",
+        "collection_id": "surveys",
+        "attributes": [
+            {"type": "string", "key": "title", "size": 255, "required": true},
+            {"type": "string", "key": "description", "size": 1024, "required": true},
+            {"type": "string", "key": "eventId", "size": 255, "required": true}
+        ]
+    },
+    {
+        "name": "SurveyQuestions",
+        "collection_id": "survey_questions",
+        "attributes": [
+            {"type": "string", "key": "question", "size": 1024, "required": true},
+            {"type": "string", "key": "surveyId", "size": 255, "required": true},
+            {"type": "enum", "key": "questionType", "required": true, "enum": ["multipleChoice", "text", "rating"]},
+            {"type": "string", "key": "options", "size": 1024},
+            {"type": "boolean", "key": "isRequired", "required": true}
+        ]
+    },
+    {
+        "name": "SurveyResponses",
+        "collection_id": "survey_responses",
+        "attributes": [
+            {"type": "string", "key": "surveyId", "size": 255, "required": true},
+            {"type": "string", "key": "userId", "size": 255, "required": true},
+            {"type": "string", "key": "eventId", "size": 255, "required": true}
+        ]
+    },
+    {
+        "name": "SurveyResponseAnswers",
+        "collection_id": "survey_response_answers",
+        "attributes": [
+            {"type": "string", "key": "responseId", "size": 255, "required": true},
+            {"type": "string", "key": "questionId", "size": 255, "required": true},
+            {"type": "string", "key": "answer", "size": 1024, "required": true}
+        ]
+    }
+]

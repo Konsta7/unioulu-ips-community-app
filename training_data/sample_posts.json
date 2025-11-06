@@ -1,0 +1,42 @@
+[
+  {
+    "id": "samplepost1",
+    "postTitle": "Best Study Spots on Campus",
+    "content": "Hey everyone! I'm a second-year student and I wanted to share some of my favorite study spots on campus. The library is great, but I also love the quiet corners in the new Student Technology Hub.",
+    "imageUrl": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "authorName": "Prof. Anna Virtanen",
+    "authorTitle": "Vice Rector for Education",
+    "pollQuestion": "How excited are you for this year?",
+    "pollOptions": "Excited, Very Excited, Not Excited"
+  },
+  {
+    "id": "samplepost2",
+    "postTitle": "Tips for Balancing Studies and Social Life",
+    "content": "As a senior student, I've learned a lot about balancing studies and social life. My advice is to create a schedule and stick to it, but also make sure to take breaks and enjoy time with friends.",
+    "imageUrl": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "authorName": "Dr. Mikko Järvinen",
+    "authorTitle": "Head of IT Services",
+    "pollQuestion": "How excited are you for this year?",
+    "pollOptions": "Excited, Very Excited, Not Excited"
+  },
+  {
+    "id": "samplepost3",
+    "postTitle": "Faculty Insights: The Future of AI",
+    "content": "Artificial Intelligence is rapidly evolving and has the potential to revolutionize many industries. In this post, I will discuss the future trends and the impact of AI on our society.",
+    "imageUrl": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "authorName": "Lisa Chen",
+    "authorTitle": "International Student Coordinator",
+    "pollQuestion": "How excited are you for this year?",
+    "pollOptions": "Excited, Very Excited, Not Excited"
+  },
+  {
+    "id": "samplepost4",
+    "postTitle": "Vote Now! Help Us Plan the Perfect Summer Event",
+    "content": "We want to know what kind of activities you'd love to see. Whether you're into relaxing beach days, adventurous hikes, or exciting music festivals, your opinion matters!.",
+    "imageUrl": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "authorName": "Dr. Anna",
+    "authorTitle": "Vice Rector for Education",
+    "pollQuestion": "What type of activities would you prefer for the upcoming Summer Event?",
+    "pollOptions": "Beach Day, Hiking and Nature Walks, Outdoor Picnic, Music Festival"
+  }
+]

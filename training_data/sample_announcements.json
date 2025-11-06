@@ -1,0 +1,14 @@
+[
+  {
+    "id": "announcement1",
+    "title": "Welcome to the New Semester!",
+    "content": "We are excited to welcome all students back for the new semester. Don't forget to check your course schedules!",
+    "date": "2025-12-01T08:00:00"
+  },
+  {
+    "id": "announcement2",
+    "title": "Library Opening Hours",
+    "content": "The library will be open 24/7 during exam week. Good luck with your studies!",
+    "date": "2025-12-08T08:00:00"
+  }
+]

@@ -25,8 +25,17 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/login', (route) => false);
+        // Redirect to login on successful registration
+        if (state is AuthRegistered) {
+          developer.log("Registration successful, redirecting to login.");
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/login', (route) => false);
+        } else if (state is AuthError) {
+          developer.log("Registration error: ${state.message}");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
       },
       child: Scaffold(
         body: SafeArea(

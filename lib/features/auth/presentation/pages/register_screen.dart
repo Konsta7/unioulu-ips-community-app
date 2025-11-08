@@ -29,7 +29,7 @@ class RegisterPage extends StatelessWidget {
         if (state is AuthRegistered) {
           developer.log("Registration successful, redirecting to login.");
           Navigator.of(context)
-              .pushNamedAndRemoveUntil('/login', (route) => false);
+              .pushNamedAndRemoveUntil('/verify-email', (route) => false);
         } else if (state is AuthError) {
           developer.log("Registration error: ${state.message}");
           ScaffoldMessenger.of(context).showSnackBar(

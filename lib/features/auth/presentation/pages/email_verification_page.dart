@@ -29,7 +29,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
       if (userId == null || secret == null) {
         setState(() {
           _isVerifying = false;
-          _message = 'Invalid verification link';
+          _message = 'Check your email for the verification link.';
         });
         return;
       }
@@ -63,11 +63,23 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
             children: [
               if (_isVerifying)
                 const CircularProgressIndicator()
-              else
+              else if (_message.contains('successfully'))
                 const Icon(
                   Icons.check_circle_outline,
                   size: 64,
                   color: Colors.green,
+                )
+              else if (_message.contains('Failed'))
+                const Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red,
+                )
+              else
+                const Icon(
+                  Icons.info_outline,
+                  size: 64,
+                  color: Colors.blue,
                 ),
               const SizedBox(height: 16),
               Text(

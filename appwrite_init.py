@@ -52,19 +52,19 @@ def seed_collection(file_path, collection):
         doc_id = doc.pop("id", "unique()")  # Remove 'id' from doc data
         try:
             databases.create_document(db_id, collection, doc_id, doc)
-            print(f"✓ {collection}/{doc_id}")
+            print(f"[SUCCESS] {collection}/{doc_id}")
         except AppwriteException as e:
-            print(f"↺ Skipped {collection}/{doc_id}: {e.message}")
+            print(f"[SKIPPED] {collection}/{doc_id}: {e.message}")
 
 
 def create_unique_like_index(collection_id, index_name, fields):
     try:
         print(f"Creating unique index {index_name} on {collection_id}...")
         databases.create_index(db_id, collection_id, index_name, "unique", fields, ['ASC', 'ASC'] )
-        print(f"  ✓ Created {index_name}")
+        print(f"  [SUCCESS] Created {index_name}")
     except AppwriteException as e:
         # Most common case: index already exists → skip without failing the run
-        print(f"  ↺ Skipped {index_name}: Index already exists")
+        print(f"  [SKIPPED] {index_name}: Index already exists")
 
 def create_like_indexes():
     create_unique_like_index("event_likes", "eventId_userId_unique", ["eventId", "userId"])
@@ -184,9 +184,9 @@ def create_collections(databases: Databases):
                     )
                 else:
                     raise ValueError(f'Unknown attribute type: {attribute_type}')
-                print(f"    ✓ Created {attribute_key}")
+                print(f"    [SUCCESS] Created {attribute_key}")
             except AppwriteException as e:
-                print(f"    ✗ Error creating {attribute_key}: {e.message}")
+                print(f"    [ERROR] Error creating {attribute_key}: {e.message}")
 
  
 if __name__ == "__main__":   
@@ -219,11 +219,11 @@ if __name__ == "__main__":
         print("\n=== Creating indexes ===")
         create_like_indexes()
         
-        print("\n✓ Database initialization complete!")
+        print("\n[SUCCESS] Database initialization complete!")
         
     except AppwriteException as e:
-        print(f"\n✗ Exception: {e.message}")
+        print(f"\n[ERROR] Exception: {e.message}")
         print(f"   Type: {e.type if hasattr(e, 'type') else 'N/A'}")
         print(f"   Code: {e.code if hasattr(e, 'code') else 'N/A'}")
     except Exception as e:
-        print(f"\n✗ Unexpected error: {str(e)}")
+        print(f"\n[ERROR] Unexpected error: {str(e)}")

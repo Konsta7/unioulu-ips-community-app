@@ -18,17 +18,20 @@ class AuthRepositoryImpl implements AuthRepository {
     final appwrite.User user =
         await remoteDataSource.register(email, password, name);
 
+// Commented out since it caused login issues
+/*
     await remoteDataSource.login(email, password);
 
     try {
+      // Use a custom scheme deep link so the verification link opens the app
+      // Appwrite will append ?userId=...&secret=... to this URL
       await remoteDataSource.createVerification(
-          url:
-              'http://localhost:9101/verify-email' // Replace with your actual domain
-          );
+          url: 'http://localhost:8080/verify-email');
     } catch (e) {
       // Log the error but don't fail registration
       throw Exception('Failed to get current user: ${e.toString()}');
     }
+*/
 
     final userModel = UserModel.fromAppwriteUser(user);
     await isar.writeTxn(() async {

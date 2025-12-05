@@ -21,7 +21,25 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
 
   Future<void> _verifyEmail() async {
     try {
-      // Get the URL parameters
+      // If navigated here via Navigator arguments (e.g. deep link service), use them
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null) {
+        final status = args['status'] as String?;
+        final message = args['message'] as String?;
+
+        setState(() {
+          _isVerifying = false;
+          if (status == 'success') {
+            _message = message ??
+                'Email verified successfully! You can close this window.';
+          } else if (status == 'failed') {
+            _message = message ?? 'Failed to verify email.';
+          }
+        });
+        return;
+      }
+      // Get the URL parameters (web / app opened with query params)
       final Uri uri = Uri.base;
       final userId = uri.queryParameters['userId'];
       final secret = uri.queryParameters['secret'];

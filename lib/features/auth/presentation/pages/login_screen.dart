@@ -30,7 +30,10 @@ class LoginPage extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
-          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+          // Navigate to email verification if not verified, otherwise to home
+          final route = state.user.emailVerified ? '/' : '/verify-email';
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(route, (route) => false);
         } else if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),

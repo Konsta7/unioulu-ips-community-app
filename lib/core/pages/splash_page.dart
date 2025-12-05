@@ -11,6 +11,7 @@ import '../../features/theme/presentation/bloc/theme_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_button.dart';
+import 'dart:developer' as developer;
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -22,7 +23,11 @@ class SplashPage extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
-          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+          // Navigate to email verification if not verified, otherwise to home
+          final route = state.user.emailVerified ? '/' : '/verify-email';
+          developer.log(route);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(route, (route) => false);
         }
       },
       child: Scaffold(

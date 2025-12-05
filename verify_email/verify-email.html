@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Email Verification</title>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
+  </head>
+  <body>
+    <p>Verifying your email…</p>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get("userId");
+      const secret = params.get("secret");
+
+      const client = new Appwrite.Client()
+        .setEndpoint("http://localhost:8080/v1") // Example: http://localhost/v1
+        .setProject("68dbb1f70039eb5a8813");
+
+      const account = new Appwrite.Account(client);
+
+      account.updateVerification(userId, secret)
+        .then(() => {
+          document.body.innerHTML = "<h2>Email verified successfully!</h2>";
+        })
+        .catch((err) => {
+          console.error(err);
+          document.body.innerHTML = "<h2>Verification failed.</h2>";
+        });
+    </script>
+  </body>
+</html>
+

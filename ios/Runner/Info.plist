@@ -45,18 +45,5 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-
-	<!-- Custom URL scheme to receive deep links like community://verify-email?userId=...&secret=... -->
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>community</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>community</string>
-			</array>
-		</dict>
-	</array>
 </dict>
 </plist>

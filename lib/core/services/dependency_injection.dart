@@ -76,8 +76,6 @@ void _registerAuthDependencies() {
   locator.registerSingleton<AuthRemoteDataSource>(authRemoteDataSource);
   locator.registerSingleton<AuthRepositoryImpl>(authRepository);
 
-  // TODO: Deep link service disabled - uni_links3 plugin causes rendering loop
-
   locator.registerLazySingleton<Login>(() => Login(authRepository));
   locator.registerLazySingleton<Logout>(() => Logout(authRepository));
   locator.registerLazySingleton<Register>(() => Register(authRepository));

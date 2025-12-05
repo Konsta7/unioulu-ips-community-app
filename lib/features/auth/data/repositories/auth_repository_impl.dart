@@ -17,22 +17,27 @@ class AuthRepositoryImpl implements AuthRepository {
     developer.log('Starting registration for email: $email');
     final appwrite.User user =
         await remoteDataSource.register(email, password, name);
-
-// Commented out since it caused login issues
-/*
-    await remoteDataSource.login(email, password);
+    developer.log("Account registered successfully");
 
     try {
-      // Use a custom scheme deep link so the verification link opens the app
-      // Appwrite will append ?userId=...&secret=... to this URL
-      await remoteDataSource.createVerification(
-          url: 'http://localhost:8080/verify-email');
-    } catch (e) {
-      // Log the error but don't fail registration
-      throw Exception('Failed to get current user: ${e.toString()}');
-    }
-*/
+      // Login right after registration to send verification email
+      developer.log("Logging in to send verification email");
+      await remoteDataSource.login(email, password);
 
+      // Create verification link - use the physical device's reachable IP
+      developer.log("Creating verification email with deep link");
+      await remoteDataSource.createVerification(
+          url: 'http://localhost:8081/verify-email.html');
+
+      // Logout after sending verification so user must login again to proceed
+      developer.log("Logging out after sending verification");
+      await remoteDataSource.logout();
+    } catch (e) {
+      developer.log('Error during registration verification setup: $e');
+      // Don't fail registration if verification setup fails - user can still login
+    }
+
+    // Save user with emailVerified = false (not yet verified)
     final userModel = UserModel.fromAppwriteUser(user);
     await isar.writeTxn(() async {
       await isar.userModels.clear();
@@ -54,11 +59,17 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User> login(String email, String password) async {
+    developer.log("Phase 1");
     await remoteDataSource.login(email, password);
+    developer.log("Phase 2");
     final appwrite.User user = await remoteDataSource.getUser();
+    developer.log("Phase 3");
     final userModel = UserModel.fromAppwriteUser(user);
+    developer.log("Phase 4");
     await isar.writeTxn(() async {
+      developer.log("Phase 5");
       await isar.userModels.clear();
+      developer.log("Phase 6");
       await isar.userModels.put(userModel);
     });
     return userModel.toEntity();

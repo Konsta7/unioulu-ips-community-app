@@ -105,62 +105,98 @@ class EventFormState extends State<EventForm> {
 
   void _submitForm() async {
   if (_formKey.currentState!.validate()) {
-    // Store context before async operations
     final currentContext = context;
-    
     final appwriteService = AppwriteService();
 
-    // Upload the poster photo and get its URL
-    final posterPhotoUrl = await _uploadPosterPhoto(appwriteService);
-
-    // Check if widget is still mounted after async operation
-    if (!mounted) return;
-
-    if (posterPhotoUrl == null) {
+    // Validate required fields that are not covered by TextForm validators:
+    if (_selectedPosterPhoto == null) {
       ScaffoldMessenger.of(currentContext).showSnackBar(
-        const SnackBar(content: Text('Failed to upload poster photo.')),
+        const SnackBar(content: Text('Please select a poster photo.')),
       );
       return;
     }
 
-    // Create the event data with a unique document ID
-    final data = {
-      'posterPhotoUrl': posterPhotoUrl,
-      'title_en': _titleEnController.text.isNotEmpty
-          ? _titleEnController.text
-          : 'Default Title',
-      // Rest of your data assignments...
-    };
+    if (_selectedTags.isEmpty) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        const SnackBar(content: Text('Please select at least one topic.')),
+      );
+      return;
+    }
+
+    if (_dateController.text.isEmpty) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        const SnackBar(content: Text('Please select a date.')),
+      );
+      return;
+    }
+
+    if (_timeController.text.isEmpty) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        const SnackBar(content: Text('Please enter a time.')),
+      );
+      return;
+    }
 
     try {
-      // Show loading indicator
       ScaffoldMessenger.of(currentContext).showSnackBar(
         const SnackBar(content: Text('Adding event...')),
       );
-      
-      // Make the request to create a new document
+
+      // Upload poster and get URL (throws on failure)
+      final posterPhotoUrl = await _uploadPosterPhoto(appwriteService);
+
+      if (!mounted) return;
+      if (posterPhotoUrl == null) {
+        ScaffoldMessenger.of(currentContext).showSnackBar(
+          const SnackBar(content: Text('Failed to upload poster photo.')),
+        );
+        return;
+      }
+
+      // Build the full data map expected by Appwrite (include required keys)
+      final data = {
+        'posterPhotoUrl': posterPhotoUrl,
+        'topics': _selectedTags.join(','), // store as comma-separated string
+        'title_en': _titleEnController.text.trim().isNotEmpty
+            ? _titleEnController.text.trim()
+            : 'Untitled event',
+        'title_fi': _titleFiController.text.trim(),
+        'title_sv': _titleSvController.text.trim(),
+        'location_en': _locationEnController.text.trim(),
+        'location_fi': _locationFiController.text.trim(),
+        'location_sv': _locationSvController.text.trim(),
+        // Appwrite expects datetime strings for datetime attributes
+        'date': _dateController.text,
+        'time': _timeController.text.trim(),
+        'organizerName': _organizerNameController.text.trim(),
+        'details_en': _detailsEnController.text.trim(),
+        'details_fi': _detailsFiController.text.trim(),
+        'details_sv': _detailsSvController.text.trim(),
+        'ticketDetails_en': _ticketDetailsEnController.text.trim(),
+        'ticketDetails_fi': _ticketDetailsFiController.text.trim(),
+        'ticketDetails_sv': _ticketDetailsSvController.text.trim(),
+        'locationUrl': _locationUrlController.text.trim(),
+        'price': _priceController.text.trim(),
+      };
+
+      // Send to Appwrite — wrap fields under 'data' as Appwrite HTTP API expects
       await appwriteService.createDocument(
         collectionId: "events",
-        data: data,
-        documentId: 'unique()', // Pass directly as parameter
+        data: {
+          'documentId': 'unique()', // <-- add this
+          'data': data,
+        },
+        documentId: 'unique()',
       );
 
-      // Check if widget is still mounted after second async operation
       if (!mounted) return;
-      
-      // Clear loading snackbar
       ScaffoldMessenger.of(currentContext).clearSnackBars();
-      
-      // Show success and navigate
       ScaffoldMessenger.of(currentContext).showSnackBar(
         const SnackBar(content: Text('Event added successfully!')),
       );
       Navigator.of(currentContext).pop();
     } catch (e) {
-      // Check if widget is still mounted
       if (!mounted) return;
-      
-      // Show error message
       ScaffoldMessenger.of(currentContext).showSnackBar(
         SnackBar(content: Text('Error adding event: ${e.toString()}')),
       );

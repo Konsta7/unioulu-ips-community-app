@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import '../../../../core/services/http_appwrite_service.dart';
 
@@ -30,20 +31,29 @@ class AddAnnouncementFormState extends State<AddAnnouncementForm> {
         'date': DateTime.now().toIso8601String(),
       };
 
-      await appwriteService.createDocument(
-        collectionId: "accouncements",
-        data: {
-          'documentId': 'unique()',
-          'data': data,
-        },
-      );
-      
-      if (!mounted) return;
+      try {
+        developer.log('Creating announcement payload: $data');
+        final result = await appwriteService.createDocument(
+          collectionId: "announcements",
+          data: data,
+          documentId: 'unique()',
+        );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Announcement added successfully!')),
-      );
-      Navigator.of(context).pop();
+        developer.log('Create announcement response: $result');
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Announcement added successfully!')),
+        );
+        Navigator.of(context).pop();
+      } catch (e, st) {
+        developer.log('Failed to create announcement: $e', error: e, stackTrace: st);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add announcement: ${e.toString()}')),
+        );
+      }
     }
   }
 

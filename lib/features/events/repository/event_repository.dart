@@ -76,12 +76,11 @@ class EventRepository {
         // Extract the event IDs that the user has liked
         final likedEventIds = eventLikes.map((doc) => doc['eventId']).toList();
 
-        // Query the 'posts' collection to fetch the full post data for each liked post
+        // Query the 'events' collection to fetch the full event data for each liked event
         final eventsResponse = await appwriteService.listDocuments(
-          collectionId: 'posts',
+          collectionId: 'events',
           queries: [
-            Query.contains('\$id',
-                likedEventIds),
+            Query.contains('\$id', likedEventIds),
           ],
         );
 
@@ -94,9 +93,10 @@ class EventRepository {
             .map((doc) {
               try {
                 if (doc is Map<String, dynamic>) {
-                  return EventModel.fromMap(doc);
+                  return EventModel.fromMap(doc['data'] ?? doc);
                 }
-                return EventModel.fromMap(jsonDecode(jsonEncode(doc)));
+                return EventModel.fromMap(jsonDecode(jsonEncode(doc))['data'] ??
+                    jsonDecode(jsonEncode(doc)));
               } catch (e) {
                 developer.log('Error parsing post document: $e');
                 return null;
@@ -140,10 +140,7 @@ class EventRepository {
       developer.log('Creating like document for user $userId, event $eventId');
       return await appwriteService.createDocument(
         collectionId: "event_likes",
-        data: {
-          'documentId': 'unique()',
-          'data': newLike.toJson(),
-        },
+        data: newLike.toJson(),
         documentId: 'unique()',
       );
     } catch (e) {

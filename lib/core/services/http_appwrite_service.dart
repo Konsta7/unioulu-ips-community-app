@@ -224,20 +224,30 @@ class AppwriteService {
     final endpointPath =
         'databases/$databaseId/collections/$collectionId/documents';
 
-    // Handle documentId properly
+    // Query params (used by Appwrite to generate id when documentId == 'unique()')
     final Map<String, String> queryParams = {};
     if (documentId != null && documentId == 'unique()') {
       queryParams['documentId'] = 'unique()';
     }
 
-    // Use the documentId in query params or in body based on its value
-    final Map<String, dynamic> requestData = {...data};
-    if (documentId != null && documentId != 'unique()') {
-      requestData['\$id'] = documentId; // Use $id for explicit IDs
+    // Ensure the request body always contains a top-level 'data' key for Appwrite.
+    // If caller already provided a 'data' key, keep it as-is.
+    final Map<String, dynamic> requestData =
+        data.containsKey('data') ? {...data} : {'data': {...data}};
+
+    // Include documentId information in the body to be robust for proxies / appwrite versions.
+    if (documentId != null) {
+      if (documentId == 'unique()') {
+        requestData['documentId'] = 'unique()';
+      } else {
+        // For explicit IDs, include both Appwrite's explicit id key and documentId for safety
+        requestData['\$id'] = documentId;
+        requestData['documentId'] = documentId;
+      }
     }
 
     try {
-      developer.log('Creating document with data: $requestData');
+      developer.log('Creating document with payload: $requestData');
       developer.log('Document query params: $queryParams');
 
       final response = await makeRequest(

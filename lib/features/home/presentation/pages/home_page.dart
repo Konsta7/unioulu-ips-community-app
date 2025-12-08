@@ -21,324 +21,314 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get the current locale from LocalizationBloc
-    final currentLocale = context
-        .select((LocalizationBloc bloc) => bloc.state.locale.languageCode);
-    final appwriteService = GetIt.instance<AppwriteService>();
-
     return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is AuthAuthenticated) {
-          final isAdmin = state.labels.contains('admin');
-          final isModerator = state.labels.contains('moderator');
-          final isUser = state.labels.contains('user');
-
-          if (isAdmin) {
-            return _buildAdminScaffold(context, currentLocale, appwriteService);
-          } else if (isModerator) {
-            return _buildModeratorScaffold(
-                context, currentLocale, appwriteService);
-          } else if (isUser) {
-            return _buildUserScaffold(
-                context, currentLocale, appwriteService, state.user.name);
-          }
-        }
-
-        // If not authenticated, show a default scaffold or login prompt
-        return const Scaffold(
-          appBar: CustomAppBar(
-            title: 'WeConnect',
-          ),
-          body: Center(
-            child: Text('Please log in to access the home page.'),
-          ),
-        );
-      },
+      builder: (context, state) => _buildForAuthState(context, state),
     );
   }
 
-  Widget _buildAdminScaffold(BuildContext context, String currentLocale,
-      AppwriteService appwriteService) {
+  Widget _buildForAuthState(BuildContext context, AuthState state) {
+    if (state is! AuthAuthenticated) return _buildUnauthenticated();
+
+    final locale = context.select((LocalizationBloc b) => b.state.locale.languageCode);
+    final service = GetIt.instance<AppwriteService>();
+    final userName = state.user.name;
+
+    if (state.labels.contains('admin')) {
+      return AdminHomePage(locale: locale, service: service, userName: userName);
+    }
+    if (state.labels.contains('moderator')) {
+      return ModeratorHomePage(locale: locale, service: service, userName: userName);
+    }
+    return UserHomePage(locale: locale, service: service, userName: userName);
+  }
+
+  Widget _buildUnauthenticated() {
+    return const Scaffold(
+      appBar: CustomAppBar(title: 'WeConnect'),
+      body: Center(child: Text('Please log in to access the home page.')),
+    );
+  }
+}
+
+// ==================== ADMIN ====================
+class AdminHomePage extends StatelessWidget {
+  final String locale;
+  final AppwriteService service;
+  final String userName;
+
+  const AdminHomePage({
+    super.key,
+    required this.locale,
+    required this.service,
+    required this.userName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: CustomAppBar(
-          title: 'WeConnect'
-          
-        ),
+        appBar: const CustomAppBar(title: 'WeConnect'),
         body: Column(
           children: [
-            // Custom tab bar without an AppBar
-            Container(
-              color: Theme.of(context).primaryColor,
-              child: const TabBar(
-                tabs: [
-                  Tab(
-                    text: 'Admin Dashboard',
-                    icon: Icon(Icons.admin_panel_settings),
-                  ),
-                  Tab(text: 'User View', icon: Icon(Icons.person)),
-                ],
-                indicatorColor: Colors.white,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white70,
-              ),
-            ),
-            // Tab content
-            Expanded(
-              child: TabBarView(
-                children: [
-                  // Admin Dashboard Tab
-                  SafeArea(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Welcome, Admin',
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const EventForm()),
-                                );
-                              },
-                              child: const Text('Add New Event'),
-                            ),
-                            const SizedBox(height: 10),
-                            CustomButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AddAnnouncementForm(),
-                                  ),
-                                );
-                              },
-                              text: 'Add New Announcement',
-                            ),
-                            const SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const TopicForm()),
-                                );
-                              },
-                              child: const Text('Add New Topic'),
-                            ),
-                            const SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Navigate to user management page
-                              },
-                              child: const Text('Manage Users'),
-                            ),
-                            const SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Navigate to content management page
-                              },
-                              child: const Text('Manage Content'),
-                            ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Quick Stats',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            // Add some admin-specific stats or widgets here
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // User View Tab - Reuse the user scaffold content
-                  BlocBuilder<AuthBloc, AuthState>(
-                    builder: (context, state) {
-                      if (state is AuthAuthenticated) {
-                        return _buildUserContentView(context, currentLocale,
-                            appwriteService, state.user.name);
-                      }
-                      return const Center(child: Text('Authentication error'));
-                    },
-                  ),
-                ],
-              ),
-            ),
+            AdminTabBar(),
+            Expanded(child: _buildTabView()),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildModeratorScaffold(BuildContext context, String currentLocale,
-      AppwriteService appwriteService) {
+  Widget _buildTabView() {
+    return TabBarView(
+      children: [
+        AdminDashboard(),
+        UserContentView(locale: locale, service: service, userName: userName),
+      ],
+    );
+  }
+}
+
+class AdminTabBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).primaryColor;
+    return Container(
+      color: primary,
+      child: const TabBar(
+        tabs: [
+          Tab(text: 'Admin Dashboard', icon: Icon(Icons.admin_panel_settings)),
+          Tab(text: 'User View', icon: Icon(Icons.person)),
+        ],
+        indicatorColor: Colors.white,
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white70,
+      ),
+    );
+  }
+}
+
+class AdminDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text('Welcome, Admin', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            AdminButton(label: 'Add New Event', page: const EventForm()),
+            AdminButton(label: 'Add New Announcement', page: const AddAnnouncementForm()),
+            AdminButton(label: 'Add New Topic', page: const TopicForm()),
+            const AdminPlaceholderButton(label: 'Manage Users'),
+            const AdminPlaceholderButton(label: 'Manage Content'),
+            const SizedBox(height: 20),
+            const Text('Quick Stats', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AdminButton extends StatelessWidget {
+  final String label;
+  final Widget page;
+
+  const AdminButton({super.key, required this.label, required this.page});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: ElevatedButton(
+        onPressed: () => _navigate(context),
+        child: Text(label),
+      ),
+    );
+  }
+
+  void _navigate(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+  }
+}
+
+class AdminPlaceholderButton extends StatelessWidget {
+  final String label;
+
+  const AdminPlaceholderButton({super.key, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: ElevatedButton(onPressed: () {}, child: Text(label)),
+    );
+  }
+}
+
+// ==================== MODERATOR ====================
+class ModeratorHomePage extends StatelessWidget {
+  final String locale;
+  final AppwriteService service;
+  final String userName;
+
+  const ModeratorHomePage({
+    super.key,
+    required this.locale,
+    required this.service,
+    required this.userName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Community App'),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Moderator Tools', icon: Icon(Icons.shield)),
-              Tab(text: 'User View', icon: Icon(Icons.person)),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            // Moderator Dashboard Tab
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Welcome, Moderator',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const EventForm()),
-                          );
-                        },
-                        child: const Text('Add New Event'),
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Navigate to content management page
-                        },
-                        child: const Text('Manage Content'),
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Quick Stats',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      // Add some moderator-specific stats or widgets here
-                    ],
-                  ),
-                ),
-              ),
-            ),
+        appBar: _buildAppBar(),
+        body: _buildTabView(),
+      ),
+    );
+  }
 
-            // User View Tab - Reuse the user scaffold content
-            BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                if (state is AuthAuthenticated) {
-                  return _buildUserContentView(
-                      context, currentLocale, appwriteService, state.user.name);
-                }
-                return const Center(child: Text('Authentication error'));
-              },
-            ),
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      title: const Text('Community App'),
+      bottom: const TabBar(
+        tabs: [
+          Tab(text: 'Moderator Tools', icon: Icon(Icons.shield)),
+          Tab(text: 'User View', icon: Icon(Icons.person)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabView() {
+    return TabBarView(
+      children: [
+        ModeratorDashboard(),
+        UserContentView(locale: locale, service: service, userName: userName),
+      ],
+    );
+  }
+}
+
+class ModeratorDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text('Welcome, Moderator', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            AdminButton(label: 'Add New Event', page: const EventForm()),
+            const AdminPlaceholderButton(label: 'Manage Content'),
+            const SizedBox(height: 20),
+            const Text('Quick Stats', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
     );
   }
+}
 
-// Extract the user scaffold content into its own method
-  Widget _buildUserContentView(BuildContext context, String currentLocale,
-      AppwriteService appwriteService, String userName) {
+// ==================== USER ====================
+class UserHomePage extends StatelessWidget {
+  final String locale;
+  final AppwriteService service;
+  final String userName;
+
+  const UserHomePage({
+    super.key,
+    required this.locale,
+    required this.service,
+    required this.userName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomAppBar(title: 'WeConnect'),
+      body: UserContentView(locale: locale, service: service, userName: userName),
+    );
+  }
+}
+
+class UserContentView extends StatelessWidget {
+  final String locale;
+  final AppwriteService service;
+  final String userName;
+
+  const UserContentView({
+    super.key,
+    required this.locale,
+    required this.service,
+    required this.userName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.smallPadding),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text('Hello,', style: TextStyle(fontSize: 24.0)),
-                        Text(
-                          userName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22.0,
-                          ),
-                        ),
-                        const Text(
-                          'Let\'s explore what\'s new...',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Center(
-              child: CustomButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AnnouncementsPage(),
-                      ),
-                    );
-                  },
-                  text: 'Announcements'),
-            ),
-            const SizedBox(height: 10.0),
-            TopicListWidget(
-              currentLocale: currentLocale,
-              appwriteService: appwriteService,
-            ),
-            const SizedBox(height: 10.0),
+            UserGreeting(userName: userName),
+            const SizedBox(height: 10),
+            const AnnouncementButton(),
+            const SizedBox(height: 10),
+            TopicListWidget(currentLocale: locale, appwriteService: service),
+            const SizedBox(height: 10),
             const LatestEventsWidget(),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 10),
             const LatestCommunityPostsWidget(),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildUserScaffold(BuildContext context, String currentLocale,
-      AppwriteService appwriteService, String userName) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'WeConnect',
+class UserGreeting extends StatelessWidget {
+  final String userName;
+
+  const UserGreeting({super.key, required this.userName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.smallPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Hello,', style: TextStyle(fontSize: 24)),
+          Text(userName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+          const Text('Let\'s explore what\'s new...', style: TextStyle(fontSize: 16)),
+        ],
       ),
-      body: _buildUserContentView(
-          context, currentLocale, appwriteService, userName),
     );
+  }
+}
+
+class AnnouncementButton extends StatelessWidget {
+  const AnnouncementButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CustomButton(
+        onPressed: () => _navigate(context),
+        text: 'Announcements',
+      ),
+    );
+  }
+
+  void _navigate(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const AnnouncementsPage()));
   }
 }

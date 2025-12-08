@@ -6,6 +6,13 @@ import '../datasources/auth_remote_data_source.dart';
 import '../models/user_model.dart';
 import 'dart:developer' as developer;
 
+class EmailNotVerifiedException implements Exception {
+  final String message;
+  EmailNotVerifiedException(this.message);
+  @override
+  String toString() => message;
+}
+
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final Isar isar;
@@ -59,22 +66,15 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User> login(String email, String password) async {
-    developer.log("Phase 1");
     await remoteDataSource.login(email, password);
-    developer.log("Phase 2");
     final appwrite.User user = await remoteDataSource.getUser();
     if (user.emailVerification == false) {
-      remoteDataSource.logout();
-
-      throw Exception('Email not verified');
+      await remoteDataSource.logout();
+      throw EmailNotVerifiedException('Email not verified');
     } else {
-      developer.log("Phase 3");
       final userModel = UserModel.fromAppwriteUser(user);
-      developer.log("Phase 4");
       await isar.writeTxn(() async {
-        developer.log("Phase 5");
         await isar.userModels.clear();
-        developer.log("Phase 6");
         await isar.userModels.put(userModel);
       });
       return userModel.toEntity();

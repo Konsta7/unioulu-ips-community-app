@@ -935,6 +935,27 @@ services:
     volumes:
       - appwrite-redis:/data:rw
 
+  verify-email-server:
+    image: nginx:alpine
+    container_name: verify-email-server
+    <<: *x-logging
+    restart: unless-stopped
+    networks:
+      - gateway
+      - appwrite
+    ports:
+      - "8081:80"
+    volumes:
+      - ../verify_email:/usr/share/nginx/html:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.constraint-label-stack=appwrite"
+      - "traefik.docker.network=gateway"
+      - "traefik.http.services.verify-email.loadbalancer.server.port=80"
+      - "traefik.http.routers.verify-email_http.entrypoints=appwrite_web"
+      - "traefik.http.routers.verify-email_http.rule=PathPrefix(`/verify-email`)"
+      - "traefik.http.routers.verify-email_http.service=verify-email"
+
   # clamav:
   #   image: appwrite/clamav:1.2.0
   #   container_name: appwrite-clamav

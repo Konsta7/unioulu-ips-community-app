@@ -63,16 +63,22 @@ class AuthRepositoryImpl implements AuthRepository {
     await remoteDataSource.login(email, password);
     developer.log("Phase 2");
     final appwrite.User user = await remoteDataSource.getUser();
-    developer.log("Phase 3");
-    final userModel = UserModel.fromAppwriteUser(user);
-    developer.log("Phase 4");
-    await isar.writeTxn(() async {
-      developer.log("Phase 5");
-      await isar.userModels.clear();
-      developer.log("Phase 6");
-      await isar.userModels.put(userModel);
-    });
-    return userModel.toEntity();
+    if (user.emailVerification == false) {
+      remoteDataSource.logout();
+
+      throw Exception('Email not verified');
+    } else {
+      developer.log("Phase 3");
+      final userModel = UserModel.fromAppwriteUser(user);
+      developer.log("Phase 4");
+      await isar.writeTxn(() async {
+        developer.log("Phase 5");
+        await isar.userModels.clear();
+        developer.log("Phase 6");
+        await isar.userModels.put(userModel);
+      });
+      return userModel.toEntity();
+    }
   }
 
   @override

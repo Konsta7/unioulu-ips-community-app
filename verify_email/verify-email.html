@@ -4,9 +4,51 @@
     <meta charset="UTF-8">
     <title>Email Verification</title>
     <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
+
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background: #f7f7f7;
+        color: #333;
+      }
+
+      #container {
+        text-align: center;
+      }
+
+      .icon {
+        font-size: 4rem;
+        margin-bottom: 15px;
+      }
+
+      .message {
+        font-size: 1.4rem;
+        font-weight: 500;
+      }
+
+      .loading {
+        animation: pulse 1.2s infinite;
+        opacity: 0.6;
+      }
+
+      @keyframes pulse {
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
+      }
+    </style>
   </head>
+
   <body>
-    <p>Verifying your email…</p>
+    <div id="container">
+      <div class="icon loading">⏳</div>
+      <p class="message">Verifying your email…</p>
+    </div>
 
     <script>
       const params = new URLSearchParams(window.location.search);
@@ -14,20 +56,25 @@
       const secret = params.get("secret");
 
       const client = new Appwrite.Client()
-        .setEndpoint("http://localhost:8080/v1") // Example: http://localhost/v1
+        .setEndpoint("http://localhost:8080/v1")
         .setProject("68dbb1f70039eb5a8813");
 
       const account = new Appwrite.Account(client);
 
       account.updateVerification(userId, secret)
         .then(() => {
-          document.body.innerHTML = "<h2>Email verified successfully!</h2>";
+          document.getElementById("container").innerHTML = `
+            <div class="icon">✅</div>
+            <p class="message">Email verified successfully!</p>
+          `;
         })
         .catch((err) => {
           console.error(err);
-          document.body.innerHTML = "<h2>Verification failed.</h2>";
+          document.getElementById("container").innerHTML = `
+            <div class="icon">❌</div>
+            <p class="message">Verification failed.</p>
+          `;
         });
     </script>
   </body>
 </html>
-

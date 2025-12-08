@@ -24,10 +24,7 @@ class SplashPage extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthAuthenticated) {
           // Navigate to email verification if not verified, otherwise to home
-          final route = state.user.emailVerified ? '/' : '/verify-email';
-          developer.log(route);
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(route, (route) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
         }
       },
       child: Scaffold(

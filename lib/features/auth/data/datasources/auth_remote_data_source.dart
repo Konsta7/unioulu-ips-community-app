@@ -49,6 +49,7 @@ class AuthRemoteDataSource {
   }
 
   Future<appwrite.Session> login(String email, String password) async {
+    developer.log("auth_remote_data_source.dart: login called");
     return await account.createEmailPasswordSession(
         email: email, password: password);
   }

@@ -51,6 +51,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
+    developer.log("auth_bloc.dart: _onLogin called");
     emit(AuthLoading());
     try {
       final user = await login.execute(event.email, event.password);

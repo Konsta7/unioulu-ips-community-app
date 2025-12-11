@@ -11,12 +11,14 @@ class UserModel {
   late String email;
   late String name;
   late String labels;
+  late bool emailVerified;
 
   UserModel(
       {required this.userId,
       required this.email,
       required this.name,
-      required this.labels});
+      required this.labels,
+      this.emailVerified = false});
 
   factory UserModel.fromAppwriteUser(appwrite.User user) {
     return UserModel(
@@ -24,6 +26,7 @@ class UserModel {
       email: user.email,
       name: user.name,
       labels: user.labels.join(','),
+      emailVerified: user.emailVerification,
     );
   }
 
@@ -57,6 +60,7 @@ class UserModel {
       email: email,
       name: name,
       labels: labels.split(','),
+      emailVerified: emailVerified,
     );
   }
 }

@@ -22,7 +22,6 @@ import 'features/auth/domain/usecases/logout.dart';
 import 'features/auth/domain/usecases/register.dart';
 import 'features/auth/domain/usecases/update_profile.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
-import 'features/auth/presentation/pages/email_verification_page.dart';
 import 'features/auth/presentation/pages/login_screen.dart';
 import 'features/events/data/models/event_model.dart';
 import 'features/events/repository/event_repository.dart';
@@ -43,10 +42,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:community/features/more/presentation/bloc/more_bloc.dart';
 
 final GetIt locator = GetIt.instance;
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: "appwrite/appwrite.env");
+  await dotenv.load(fileName: "appwrite/.env");
   await _initializeDatabase();
   _initializeAppwrite();
   setupLocator();
@@ -83,8 +83,46 @@ void _initializeAppwrite() {
       .registerSingleton<Databases>(Databases(client)); // Registering Databases
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late ThemeBloc _themeBloc;
+  late LocalizationBloc _localizationBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize BLoCs without events first
+    _themeBloc = ThemeBloc(
+      getTheme: locator<GetTheme>(),
+      setTheme: locator<SetTheme>(),
+    );
+    _localizationBloc = LocalizationBloc(
+      getLanguages: locator<GetLanguages>(),
+      setLanguage: locator<SetLanguage>(),
+      getSavedLanguage: locator<GetSavedLanguage>(),
+    );
+
+    // Defer BLoC event initialization to after first frame to avoid render loop
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _themeBloc.add(LoadThemeEvent());
+        _localizationBloc.add(LoadSavedLocalization());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _themeBloc.close();
+    _localizationBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,19 +133,8 @@ class MyApp extends StatelessWidget {
                   communityService: locator<CommunityService>(),
                   authRepository: locator<AuthRepositoryImpl>(),
                 )),
-        BlocProvider(
-          create: (context) => ThemeBloc(
-            getTheme: locator<GetTheme>(),
-            setTheme: locator<SetTheme>(),
-          )..add(LoadThemeEvent()),
-        ),
-        BlocProvider(
-          create: (context) => LocalizationBloc(
-            getLanguages: locator<GetLanguages>(),
-            setLanguage: locator<SetLanguage>(),
-            getSavedLanguage: locator<GetSavedLanguage>(),
-          )..add(LoadSavedLocalization()),
-        ),
+        BlocProvider.value(value: _themeBloc),
+        BlocProvider.value(value: _localizationBloc),
         BlocProvider(
           create: (context) => AuthBloc(
             login: locator<Login>(),
@@ -141,6 +168,7 @@ class MyApp extends StatelessWidget {
             themeData = AppThemeData.darkTheme;
           }
           return MaterialApp(
+            navigatorKey: appNavigatorKey,
             debugShowCheckedModeBanner: false,
             title: 'IPS Community App',
             theme: themeData,
@@ -154,7 +182,6 @@ class MyApp extends StatelessWidget {
               '/': (context) => const MainPage(),
               '/register': (context) => RegisterPage(),
               '/login': (context) => LoginPage(),
-              '/verify-email': (context) => const EmailVerificationPage(),
             },
           );
         },

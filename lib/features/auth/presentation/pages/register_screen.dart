@@ -1,4 +1,6 @@
 import 'dart:developer' as developer;
+//import 'package:get_it/get_it.dart';
+//import '../../../../core/services/deep_link_service.dart';
 
 import 'package:community/core/theme/theme_constants.dart';
 import 'package:community/core/widgets/custom_text_field.dart';
@@ -27,7 +29,15 @@ class RegisterPage extends StatelessWidget {
       listener: (context, state) {
         // Redirect to login on successful registration
         if (state is AuthRegistered) {
-          developer.log("Registration successful, redirecting to login.");
+          /*
+          developer
+              .log("Registration successful, redirecting to verification.");
+          // Re-check initial deep link in case verification link is already present
+          try {
+            GetIt.instance<DeepLinkService>().reInitializeDeepLinks();
+          } catch (_) {}
+          */
+
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/login', (route) => false);
         } else if (state is AuthError) {

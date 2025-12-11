@@ -51,16 +51,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
+    developer.log("auth_bloc.dart: _onLogin called");
     emit(AuthLoading());
     try {
       final user = await login.execute(event.email, event.password);
+      developer.log('Login successful: ${user.name}');
       emit(AuthAuthenticated(user: user, labels: user.labels));
-      final result = await account.get();
-      final fuser = UserModel.fromAppwriteUser(result).toEntity();
-
-      developer.log('Login: ${fuser.name}');
     } catch (e) {
-      emit(AuthError(message: 'Invalid email or password. Please try again.'));
+      developer.log('Login error: $e');
+      if (e.toString().contains('Email not verified')) {
+        emit(AuthError(
+            message:
+                'Email not verified. Please check your email for verification link.'));
+      } else {
+        emit(
+            AuthError(message: 'Invalid email or password. Please try again.'));
+      }
     }
   }
 

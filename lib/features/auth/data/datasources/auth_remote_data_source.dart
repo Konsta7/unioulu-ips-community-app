@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as appwrite;
 import 'package:get_it/get_it.dart';
-
 import '../../../../core/services/http_appwrite_service.dart';
 
 class AuthRemoteDataSource {
@@ -16,6 +15,7 @@ class AuthRemoteDataSource {
   Future<appwrite.User> register(
       String email, String password, String name) async {
     try {
+      developer.log("Registering user with email: $email");
       // Create a new user account
       final user = await account.create(
         userId: ID.unique(),
@@ -25,6 +25,7 @@ class AuthRemoteDataSource {
       );
 
       // Access the registered AppwriteService instance
+      developer.log("Assigning default label to the new user");
       final appwriteService = GetIt.instance<AppwriteService>();
       final response = await appwriteService.makeRequest(
         method: 'PUT',
@@ -48,6 +49,7 @@ class AuthRemoteDataSource {
   }
 
   Future<appwrite.Session> login(String email, String password) async {
+    developer.log("auth_remote_data_source.dart: login called");
     return await account.createEmailPasswordSession(
         email: email, password: password);
   }

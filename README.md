@@ -127,8 +127,6 @@ Appwrite requires you to add a platform to your project for CORS. You can add a 
 
 ### Enabling SMTP for email verification
 
-On your appwrite console navigate to settings in the bottom left corner and from there navigate to SMTP.
-
 1. Go to the Appwrite Overview dashboard.
 2. Navigate to the settings in bottom left corner.
 3. Navigate to SMTP and fill out the information:
@@ -196,31 +194,10 @@ flutter doctor
 ```
 This command will display any missing dependencies or issues that need to be resolved before proceeding. Make sure to resolve any issues if prompted.
 
----
-
-
-### 3. Clone the Project
-
-
-1. Open your terminal or command prompt.
-2. Navigate to the directory where you want to store the project.
-3. Run the following command to clone the repository:
-
-```bash
-git clone https://github.com/WalMaa/unioulu-ips-community-app.git
-```
 
 ---
 
 ### 4. Set Up the Project
-
-After cloning the project, follow these steps:
-
-1. Navigate to the project directory:
-
-```bash
-cd unioulu-ips-community-app
-```
 
 2. Fetch all the dependencies required for the project by running:
 

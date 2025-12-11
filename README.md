@@ -37,17 +37,55 @@ Before you begin, make sure you have the following installed:
 
 ---
 
-### 1. Install and Set Up Appwrite (Self-Hosted)
+### 1. Clone the Project
+
+
+1. Open your terminal or command prompt.
+2. Navigate to the directory where you want to store the project.
+3. Run the following command to clone the repository:
+
+```bash
+git clone ##TODO: ADD LINK 
+```
+Navigate to the project:
+```bash
+cd unioulu-ips-community-app
+```
+
+---
+
+
+### 2. Install and Set Up Appwrite (Self-Hosted)
 
 We are using a self-hosted **Appwrite** instance. Follow the steps below to set up **Appwrite** on your machine using Docker.
 
 #### Docker Installation
 
-1. **Docker CLI**: Make sure you have Docker installed on your machine. You can download it from [Docker's official site](https://www.docker.com/products/docker-desktop).
+1. **Docker CLI**: Make sure you have Docker installed on your machine. You can download it from [Docker's official site](https://www.docker.com/products/docker-desktop). We recommend using the desktop version.
 
 #### Run the Appwrite Server
 
-Copy the appwrite env file from https://appwrite.io/install/env and place it in the appwrite folder.
+Copy the appwrite env file from https://appwrite.io/install/env and place it in the appwrite folder with name `.env`. 
+
+Fill out the SMTP variables in the `.env` file with the the following instructions. First you need to have a Google account. (Might also work with other systems, but we recommend Google)
+
+#### Googles end
+
+1. Follow this link [Google account security](https://myaccount.google.com/security) and login if needed. 
+2. From there enable 2FA.
+3. Then navigate to home from the menu on the left.
+4. From there search for *Application passwords* and navigate to there.
+5. Create a application password and copy it 
+
+For more help in creating the password check [this tutorial](https://youtu.be/MkLX85XU5rU?si=ofN-pIZRj_SOuFaK)
+
+```bash
+_APP_SMTP_HOST=smtp.gmail.com
+_APP_SMTP_PORT=587
+_APP_SMTP_SECURE=tls
+_APP_SMTP_USERNAME=your.email.address@gmail.com
+_APP_SMTP_PASSWORD=password-you-just-created
+```
 
 If you do not want to use Docker Compose, the appwrite docs have a guide for other methods: https://appwrite.io/docs/advanced/self-hosting
 
@@ -64,18 +102,18 @@ Once the server is up and running, you can access the Appwrite dashboard at `htt
 
 You need to register a new account, create a new organization, add a platform and create a new project. Once the project is created, you will need to create an API key that you will use to interact with the Appwrite API.
 
-Adding a bucket through the Storage section is optional, but it is recommended for file storage. You can name the bucket anything you like, but make sure to update the `APPWRITE_BUCKET_ID` in your `.env` file accordingly.
+To enable the email verification you need a google account. You also need to fill out some settings in Appwrite console. Instructions to these can be found below. 
 
 ### Creating an API Key
 
 You can create an API key by following these steps:
 
 1. Go to the Appwrite Overview dashboard.
-2. Under "Integrate with your server" select "API key".
+2. Under "Integrations" select "API key".
 3. Select a name and an expiry date.
 4. Select scopes; for development purposes, you can select all scopes.
 5. Click "Create" to generate the API key.
-6. Copy the API key and add it to your project's `.env` file.
+6. Copy the API key and add it to your project's appwrite `.env` file.  !!!FIX ME!!!
 
 ### Adding a Platform
 
@@ -87,36 +125,20 @@ Appwrite requires you to add a platform to your project for CORS. You can add a 
 4. Select the correct platform and fill out the details (the package name should be the same as your Flutter app's package name. Current name is "community" and it is defined in pubspec.yaml).
 5. Click through the optional steps and press "Go to dashboard".
 
-### Enabling SMTP for password reset (optional)
+### Enabling SMTP for email verification
 
-If you want to enable password reset functionality, you need to set up SMTP settings in Appwrite. 
+On your appwrite console navigate to settings in the bottom left corner and from there navigate to SMTP.
 
-In the appwrite .env file, you should set the following variables:
+1. Go to the Appwrite Overview dashboard.
+2. Navigate to the settings in bottom left corner.
+3. Navigate to SMTP and fill out the information:
+    1. Sender name: *WeConnect*
+    2. Sender email, Reply to and Username: *The email address used in previous steps*
+    3. Server host: *smtp.gmail.com*
+    4. Server port: *587*
+    5. Password: *The one created on the [Googles end](####Googles-end)*
+![alt text](image.png)
 
-```bash
-_APP_SMTP_HOST=smtp.example.com
-_APP_SMTP_PORT=587
-_APP_SMTP_SECURE=tls
-_APP_SMTP_USERNAME=example@mail.com
-_APP_SMTP_PASSWORD=password
-```
-
-More information on SMTP settings can be found in the [Appwrite documentation](https://appwrite.io/docs/advanced/self-hosting/environment-variables#smtp).
-
-
-You need to set the following environment variables in the `.env` file in the root of the project:
-
-```bash
-# Used by Flutter
-# Your Appwrite server URL, default is http://localhost/v1
-APPWRITE_URL=http://localhost/v1
-# Your project ID
-APPWRITE_PROJECT_ID=community-app
-# Your API key
-APPWRITE_API_KEY=xyz123 
-APPWRITE_DATABASE_ID=communitydb # Default value
-APPWRITE_BUCKET_ID=bucket # Name of the appwrite bucket for file storage
-```
 
 ## Appwrite configuration with appwrite_init.py
 
@@ -157,7 +179,7 @@ For example, the Events collection will include attributes like:
 This setup ensures that your database is structured correctly for the application to work smoothly.
 
 ---
-### 2. Install Flutter
+### 3. Install Flutter
 
 Once Appwrite is set up, the next step is to install **Flutter** on your machine. Follow the official Flutter installation guide for your operating system:
 

@@ -243,7 +243,7 @@ class EventFormState extends State<EventForm> {
                   },
                   decoration: const InputDecoration(labelText: 'Select Topic'),
                   isExpanded: true,
-                  value: _selectedTags.isNotEmpty ? _selectedTags.first : null,
+                  initialValue: _selectedTags.isNotEmpty ? _selectedTags.first : null,
                 ),
                 TextFormField(
                   controller: _titleEnController,

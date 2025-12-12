@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as appwrite;
 import 'package:get_it/get_it.dart';
-
 import '../../../../core/services/http_appwrite_service.dart';
 
 class AuthRemoteDataSource {
@@ -16,6 +15,7 @@ class AuthRemoteDataSource {
   Future<appwrite.User> register(
       String email, String password, String name) async {
     try {
+      developer.log("Registering user with email: $email");
       // Create a new user account
       final user = await account.create(
         userId: ID.unique(),
@@ -25,6 +25,7 @@ class AuthRemoteDataSource {
       );
 
       // Access the registered AppwriteService instance
+      developer.log("Assigning default label to the new user");
       final appwriteService = GetIt.instance<AppwriteService>();
       final response = await appwriteService.makeRequest(
         method: 'PUT',
@@ -70,7 +71,28 @@ class AuthRemoteDataSource {
         email: email, url: 'https://example.com');
   }
 
+  Future<appwrite.Token> createVerification({required String url}) async {
+    try {
+      return await account.createVerification(url: url);
+    } catch (e) {
+      developer.log('Error creating verification: $e');
+      rethrow;
+    }
+  }
+
   Future<appwrite.User> getUser() async {
     return await account.get();
+  }
+
+  Future<appwrite.Token> updateVerification({
+    required String userId,
+    required String secret,
+  }) async {
+    try {
+      return await account.updateVerification(userId: userId, secret: secret);
+    } catch (e) {
+      developer.log('Error updating verification: $e');
+      rethrow;
+    }
   }
 }

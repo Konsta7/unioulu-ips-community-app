@@ -112,7 +112,7 @@ class TopicFormState extends State<TopicForm> {
                 ),
                 const SizedBox(height: 16.0),
                 DropdownButtonFormField<String>(
-                  value: _selectedIconName,
+                  initialValue: _selectedIconName,
                   items: iconNames.map((iconName) {
                     return DropdownMenuItem<String>(
                       value: iconName,

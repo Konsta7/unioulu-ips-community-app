@@ -35,31 +35,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ResetPasswordEvent>(_onResetPassword);
   }
 
-  void _onResetPassword(ResetPasswordEvent event, Emitter<AuthState> emit) async {
+  void _onResetPassword(
+      ResetPasswordEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       developer.log('ResetPasswordEvent: ${event.email}');
       // TODO: Make a reset password page through appwrite functions for example.
-      await account.createRecovery(email: event.email, url: "http://localhost:3000/recovery");
+      await account.createRecovery(
+          email: event.email, url: "http://localhost:3000/recovery");
 
       emit(AuthResetPasswordSuccess(message: 'Recovery email sent.'));
-
     } catch (e) {
       emit(AuthError(message: e.toString()));
     }
   }
-  
+
   void _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
+    developer.log("auth_bloc.dart: _onLogin called");
     emit(AuthLoading());
     try {
       final user = await login.execute(event.email, event.password);
+      developer.log('Login successful: ${user.name}');
       emit(AuthAuthenticated(user: user, labels: user.labels));
-      final result = await account.get();
-      final fuser = UserModel.fromAppwriteUser(result).toEntity();
-
-      developer.log('Login: ${fuser.name}');
     } catch (e) {
-      emit(AuthError(message: 'Invalid email or password. Please try again.'));
+      developer.log('Login error: $e');
+      if (e.toString().contains('Email not verified')) {
+        emit(AuthError(
+            message:
+                'Email not verified. Please check your email for verification link.'));
+      } else {
+        emit(
+            AuthError(message: 'Invalid email or password. Please try again.'));
+      }
     }
   }
 
@@ -78,9 +85,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       await register.execute(event.email, event.password, event.name);
-      final user = await login.execute(event.email, event.password);
-      emit(AuthAuthenticated(user: user, labels: user.labels));
-      developer.log('Register: ${user.toString()}');
+      emit(AuthRegistered());
     } catch (e) {
       emit(AuthError(message: e.toString()));
     }
@@ -119,7 +124,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = UserModel.fromAppwriteUser(appwriteUser).toEntity();
         emit(AuthAuthenticated(user: user, labels: user.labels));
 
-        developer.log('CheckAuthentication: ${user.email} & ${user.labels.join(',')}');
+        developer.log(
+            'CheckAuthentication: ${user.email} & ${user.labels.join(',')}');
       }
     } catch (e) {
       emit(AuthInitial());

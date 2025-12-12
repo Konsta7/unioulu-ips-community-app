@@ -28,3 +28,5 @@ doc/api/
 .flutter-plugins-dependencies
 
 .idea
+
+.venv

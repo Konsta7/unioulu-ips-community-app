@@ -88,8 +88,9 @@ void _registerAuthDependencies() {
 void _registerCommonServices() {
   locator.registerLazySingleton<AppwriteService>(() => AppwriteService());
 
-  locator.registerLazySingleton<EventRepository>(
-      () => EventRepository());
-  locator.registerLazySingleton<CommunityService>(() => CommunityService(appwriteService: locator<AppwriteService>()));
-  locator.registerLazySingleton<SurveyService>(() => SurveyService(appwriteService: locator<AppwriteService>()));
+  locator.registerLazySingleton<EventRepository>(() => EventRepository());
+  locator.registerLazySingleton<CommunityService>(
+      () => CommunityService(appwriteService: locator<AppwriteService>()));
+  locator.registerLazySingleton<SurveyService>(
+      () => SurveyService(appwriteService: locator<AppwriteService>()));
 }

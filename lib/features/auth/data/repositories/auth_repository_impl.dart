@@ -4,6 +4,14 @@ import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 import '../models/user_model.dart';
+import 'dart:developer' as developer;
+
+class EmailNotVerifiedException implements Exception {
+  final String message;
+  EmailNotVerifiedException(this.message);
+  @override
+  String toString() => message;
+}
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -13,8 +21,30 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User> register(String email, String password, String name) async {
+    developer.log('Starting registration for email: $email');
     final appwrite.User user =
         await remoteDataSource.register(email, password, name);
+    developer.log("Account registered successfully");
+
+    try {
+      // Login right after registration to send verification email
+      developer.log("Logging in to send verification email");
+      await remoteDataSource.login(email, password);
+
+      // Create verification link - use the physical device's reachable IP
+      developer.log("Creating verification email with deep link");
+      await remoteDataSource.createVerification(
+          url: 'http://localhost:8081/verify-email.html');
+
+      // Logout after sending verification so user must login again to proceed
+      developer.log("Logging out after sending verification");
+      await remoteDataSource.logout();
+    } catch (e) {
+      developer.log('Error during registration verification setup: $e');
+      // Don't fail registration if verification setup fails - user can still login
+    }
+
+    // Save user with emailVerified = false (not yet verified)
     final userModel = UserModel.fromAppwriteUser(user);
     await isar.writeTxn(() async {
       await isar.userModels.clear();
@@ -23,16 +53,32 @@ class AuthRepositoryImpl implements AuthRepository {
     return userModel.toEntity();
   }
 
+  Future<void> confirmVerification(String userId, String secret) async {
+    try {
+      await remoteDataSource.updateVerification(
+        userId: userId,
+        secret: secret,
+      );
+    } catch (e) {
+      throw Exception('Failed to get current user: ${e.toString()}');
+    }
+  }
+
   @override
   Future<User> login(String email, String password) async {
     await remoteDataSource.login(email, password);
     final appwrite.User user = await remoteDataSource.getUser();
-    final userModel = UserModel.fromAppwriteUser(user);
-    await isar.writeTxn(() async {
-      await isar.userModels.clear();
-      await isar.userModels.put(userModel);
-    });
-    return userModel.toEntity();
+    if (user.emailVerification == false) {
+      await remoteDataSource.logout();
+      throw EmailNotVerifiedException('Email not verified');
+    } else {
+      final userModel = UserModel.fromAppwriteUser(user);
+      await isar.writeTxn(() async {
+        await isar.userModels.clear();
+        await isar.userModels.put(userModel);
+      });
+      return userModel.toEntity();
+    }
   }
 
   @override
@@ -79,14 +125,12 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-Future<String> getCurrentUserName() async {
+  Future<String> getCurrentUserName() async {
     try {
       final user = await remoteDataSource.getUser();
       return user.name;
     } catch (e) {
       throw Exception('Failed to get current user: ${e.toString()}');
-      
     }
-}
-
+  }
 }

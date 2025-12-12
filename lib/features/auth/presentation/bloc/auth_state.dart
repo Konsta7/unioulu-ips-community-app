@@ -10,6 +10,15 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
+class AuthRegistered extends AuthState {
+  final String message;
+
+  AuthRegistered({this.message = "Registration successful!"});
+
+  @override
+  List<Object> get props => [message];
+}
+
 class AuthAuthenticated extends AuthState {
   final User user;
   final List<String> labels;

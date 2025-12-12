@@ -1,11 +1,9 @@
-import 'package:community/features/more/presentation/pages/more_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:community/features/chatbot/chatbot_screen.dart';
 import 'package:mockito/annotations.dart'; // For generating mocks
-import './chatbot_screen_test.mocks.dart';  // Adjust this path as needed
+// Adjust this path as needed
 
 // Generate mocks for http.Client
 @GenerateMocks([http.Client])

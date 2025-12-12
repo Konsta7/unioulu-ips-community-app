@@ -22,6 +22,7 @@ class SplashPage extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
+          // Navigate to email verification if not verified, otherwise to home
           Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
         }
       },

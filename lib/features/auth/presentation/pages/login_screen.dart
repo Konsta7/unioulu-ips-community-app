@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:community/core/theme/theme_constants.dart';
 import 'package:community/core/widgets/custom_text_field.dart';
 import 'package:community/core/widgets/password_text_field.dart';
@@ -15,6 +13,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'password_reset_screen.dart';
+import 'dart:developer' as developer;
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -24,14 +23,12 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: remove test logout code
-    // perform logout
-    // context.read<AuthBloc>().add(LogoutEvent());
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
           Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
         } else if (state is AuthError) {
+          developer.log("Login error: ${state.message}");
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
           );

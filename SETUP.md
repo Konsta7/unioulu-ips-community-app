@@ -83,6 +83,15 @@ Adding a bucket through the Storage section is optional, but is needed to add ne
 
 To enable the email verification you need a google account. You also need to fill out some settings in Appwrite console. Instructions to these can be found below. 
 
+Add these to the end of your `.env` file:
+```bash
+APPWRITE_API_KEY=your_api_key
+APPWRITE_URL=http://localhost/v1
+APPWRITE_PROJECT_ID=your_project_id
+APPWRITE_DATABASE_ID=community
+APPWRITE_BUCKET_ID=bucket
+```
+
 #### Creating an API Key
 
 You can create an API key by following these steps:

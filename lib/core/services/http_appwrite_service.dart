@@ -105,36 +105,53 @@ class AppwriteService {
     final url = Uri.parse('$endpoint/$endpointPath');
 
     try {
+      developer.log('===== FILE UPLOAD START =====');
+      developer.log('Bucket ID: $bucketId');
+      developer.log('File path: ${file.path}');
+      developer.log('Upload URL: $url');
+      developer.log('Endpoint: $endpoint');
+      
       final request = http.MultipartRequest('POST', url)
         ..headers.addAll({
           'X-Appwrite-Project': projectId,
           'X-Appwrite-Key': apiKey,
         });
 
+      developer.log('Headers: ${request.headers}');
+
       // Add optional parameters if provided
       if (fileId != null) {
         request.fields['fileId'] = fileId;
+        developer.log('Added fileId: $fileId');
       }
 
       if (permissions != null && permissions.isNotEmpty) {
         request.fields['permissions'] = jsonEncode(permissions);
+        developer.log('Added permissions: $permissions');
       }
 
       // Add the file
       request.files.add(await http.MultipartFile.fromPath('file', file.path));
+      developer.log('Added file to request');
 
-      developer.log('Uploading file to $url');
+      developer.log('Sending upload request...');
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
+
+      developer.log('Upload response status: ${response.statusCode}');
+      developer.log('Upload response body: ${response.body}');
 
       _logResponse(response);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        developer.log('===== FILE UPLOAD SUCCESS =====');
         return jsonDecode(response.body);
       } else {
+        developer.log('===== FILE UPLOAD FAILED =====');
         throw Exception('Failed to upload file: ${response.body}');
       }
     } catch (e) {
+      developer.log('===== FILE UPLOAD ERROR =====');
       developer.log('Error uploading file: $e',
           error: e, stackTrace: StackTrace.current);
       rethrow;
@@ -224,48 +241,47 @@ class AppwriteService {
     final endpointPath =
         'databases/$databaseId/collections/$collectionId/documents';
 
-    // Query params (used by Appwrite to generate id when documentId == 'unique()')
-    final Map<String, String> queryParams = {};
-    if (documentId != null && documentId == 'unique()') {
-      queryParams['documentId'] = 'unique()';
-    }
-
     // Ensure the request body always contains a top-level 'data' key for Appwrite.
     // If caller already provided a 'data' key, keep it as-is.
     final Map<String, dynamic> requestData =
         data.containsKey('data') ? {...data} : {'data': {...data}};
 
-    // Include documentId information in the body to be robust for proxies / appwrite versions.
+    // Always include documentId in the request body at the TOP LEVEL
     if (documentId != null) {
-      if (documentId == 'unique()') {
-        requestData['documentId'] = 'unique()';
-      } else {
-        // For explicit IDs, include both Appwrite's explicit id key and documentId for safety
-        requestData['\$id'] = documentId;
-        requestData['documentId'] = documentId;
-      }
+      requestData['documentId'] = documentId;
+    } else {
+      // If no documentId provided, use 'unique()' so Appwrite generates one
+      requestData['documentId'] = 'unique()';
     }
 
     try {
-      developer.log('Creating document with payload: $requestData');
-      developer.log('Document query params: $queryParams');
+      developer.log('===== CREATE DOCUMENT START =====');
+      developer.log('Collection: $collectionId');
+      developer.log('Creating document with payload: ${jsonEncode(requestData)}');
 
       final response = await makeRequest(
         method: 'POST',
         endpointPath: endpointPath,
         data: requestData,
-        queryParameters: queryParams.isNotEmpty ? queryParams : null,
+        queryParameters: null, // Don't use query params for documentId
       );
 
+      developer.log('Response Status: ${response.statusCode}');
+      developer.log('Response Body (FULL): ${response.body}');
+
       if (response.statusCode == 201) {
+        developer.log('===== CREATE DOCUMENT SUCCESS =====');
         return jsonDecode(response.body);
       } else {
-        developer.log(
-            'Failed to create document. Status: ${response.statusCode}, Response: ${response.body}');
+        developer.log('===== CREATE DOCUMENT FAILED =====');
+        developer.log('Status ${response.statusCode}: ${response.reasonPhrase}');
+        developer.log('Error Response: ${response.body}');
         throw Exception('Failed to create document: ${response.body}');
       }
-    } catch (e) {
-      developer.log('Error creating document: $e');
+    } catch (e, st) {
+      developer.log('===== CREATE DOCUMENT ERROR =====');
+      developer.log('Exception: $e');
+      developer.log('Stack Trace: $st');
       rethrow;
     }
   }

@@ -86,11 +86,18 @@ class CommunityService {
 
       // Fetch like counts for all posts at once
       final likeCounts = await getPostLikeCounts(postIds);
+      
+      // Fetch comment counts 
+      final commentCounts = await getPostCommentCounts(postIds);
 
-      // Update posts with like counts
+      // Update posts with like counts and comment counts
       for (int i = 0; i < posts.length; i++) {
-        final count = likeCounts[posts[i].id] ?? 0;
-        posts[i] = posts[i].copyWith(likeCount: count);
+        final likeCount = likeCounts[posts[i].id] ?? 0;
+        final commentCount = commentCounts[posts[i].id] ?? 0; 
+        posts[i] = posts[i].copyWith(
+          likeCount: likeCount,
+          commentCount: commentCount, 
+        );
       }
 
       return posts;
@@ -110,13 +117,10 @@ class CommunityService {
       final response = await _appwriteService.createDocument(
         collectionId: 'comments',
         data: {
-          'documentId': 'unique()',
-          'data': {
-            'postId': postId,
-            'text': text,
-            'username': username,
-            'dateTime': DateTime.now().toIso8601String(),
-          },
+          'postId': postId,
+          'text': text,
+          'username': username,
+          'dateTime': DateTime.now().toIso8601String(),
         },
         documentId: 'unique()',
       );
@@ -265,10 +269,7 @@ class CommunityService {
     try {
       return await _appwriteService.createDocument(
         collectionId: 'comment_likes',
-        data: {
-          'documentId': 'unique()',
-          'data': newLike,
-        },
+        data: newLike,
         documentId: 'unique()',
       );
     } catch (e) {
@@ -290,10 +291,7 @@ class CommunityService {
     try {
       return await _appwriteService.createDocument(
         collectionId: 'post_likes',
-        data: {
-          'documentId': 'unique()',
-          'data': newLike,
-        },
+        data: newLike,
         documentId: 'unique()',
       );
     } catch (e) {
@@ -444,6 +442,38 @@ class CommunityService {
       return likeCounts;
     } catch (e) {
       throw Exception('Failed to fetch like counts: ${e.toString()}');
+    }
+  }
+
+  Future<Map<String, int>> getPostCommentCounts(List<String> postIds) async {
+    try {
+      Map<String, int> commentCounts = {};
+
+      // Initialize all post IDs to 0
+      for (final id in postIds) {
+        commentCounts[id] = 0;
+      }
+
+      // Fetch all comments and count them by postId
+      final response = await _appwriteService.listDocuments(
+        collectionId: 'comments',
+      );
+
+      if (response.containsKey('documents') && response['documents'] is List) {
+        final comments = response['documents'] as List;
+
+        // Count comments per post
+        for (final comment in comments) {
+          final postId = comment['postId'];
+          if (commentCounts.containsKey(postId)) {
+            commentCounts[postId] = (commentCounts[postId] ?? 0) + 1;
+          }
+        }
+      }
+
+      return commentCounts;
+    } catch (e) {
+      throw Exception('Failed to fetch comment counts: ${e.toString()}');
     }
   }
 

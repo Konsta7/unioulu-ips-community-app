@@ -99,7 +99,7 @@ class EventFormState extends State<EventForm> {
         );
 
       final fileId = response['\$id'];
-      return '${appwriteService.endpoint}/storage/buckets/storage/files/$fileId/view?project=$appwriteProjectId&mode=admin';
+      return '${appwriteService.endpoint}/storage/buckets/$appwriteBucketId/files/$fileId/view?project=$appwriteProjectId';
    
   }
 
@@ -183,7 +183,7 @@ class EventFormState extends State<EventForm> {
       await appwriteService.createDocument(
         collectionId: "events",
         data: {
-          'documentId': 'unique()', // <-- add this
+          'documentId': 'unique()',
           'data': data,
         },
         documentId: 'unique()',

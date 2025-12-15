@@ -81,6 +81,8 @@ You need to register a new account, create a new organization, add a platform an
 
 Adding a bucket through the Storage section is optional, but is needed to add new events in admin role. You can name the bucket anything you like, but make sure to update the `APPWRITE_BUCKET_ID` in your `.env` file accordingly. Don't create database yet, because later on a script(appwrite_init.py) does it automatically with some tables included.
 
+In order to view event poster photos while using the app, you must set bucket settings so that anyone has permission to read.
+
 To enable the email verification you need a google account. You also need to fill out some settings in Appwrite console. Instructions to these can be found below. 
 
 Add these to the end of your `.env` file:

@@ -53,23 +53,55 @@ class _SingleCommunityPostPageState extends State<SingleCommunityPostPage> {
         communityService: locator<CommunityService>(),
         authRepository: locator<AuthRepositoryImpl>(),
       )..add(LoadSinglePost(post: widget.post)),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Community Post')),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildPostCard(),
-              CommentInputField(
-                postId: widget.post.id,
-                onCommentSubmit: (_, commentText) =>
-                    context.read<CommunityBloc>().add(
-                          AddComment(
-                              postId: widget.post.id, commentText: commentText),
-                        ),
+      child: BlocListener<CommunityBloc, CommunityState>(
+        listener: (context, state) {
+          if (state is CommunityError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
               ),
-              CommentsSection(postId: widget.post.id),
-            ],
+            );
+          } else if (state is CommentAdded) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Comment added successfully!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(title: const Text('Community Post')),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildPostCard(),
+                BlocBuilder<CommunityBloc, CommunityState>(
+                  buildWhen: (prev, curr) => curr is PostLoaded || curr is CommentsLoading,
+                  builder: (context, state) {
+                    // Only show comment input after post is loaded
+                    if (state is PostLoaded) {
+                      return CommentInputField(
+                        postId: widget.post.id,
+                        onCommentSubmit: (_, commentText) =>
+                            context.read<CommunityBloc>().add(
+                                  AddComment(
+                                      postId: widget.post.id, commentText: commentText),
+                                ),
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+                CommentsSection(postId: widget.post.id),
+              ],
+            ),
           ),
         ),
       ),

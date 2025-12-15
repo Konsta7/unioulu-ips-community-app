@@ -15,6 +15,7 @@ class PostModel {
   final List<PollOption> pollOptions;
   final bool isLiked;
   final int likeCount;
+  final int commentCount;
 
   PostModel({
     required this.id,
@@ -28,6 +29,7 @@ class PostModel {
     this.pollOptions = const [],
     this.isLiked = false,
     this.likeCount = 0,
+    this.commentCount = 0,
   });
 
   factory PostModel.fromMap(Map<String, dynamic> json) {
@@ -64,6 +66,7 @@ class PostModel {
       pollOptions: pollOptionsList, // Use the processed list
       isLiked: json['isLiked'] as bool? ?? false,
       likeCount: json['likeCount'] as int? ?? 0,
+      commentCount: json['commentCount'] as int? ?? 0,
     );
   }
 
@@ -89,6 +92,7 @@ class PostModel {
     }
   }
 
+  // In copyWith method, add:
   PostModel copyWith({
     String? id,
     String? authorName,
@@ -101,6 +105,7 @@ class PostModel {
     List<PollOption>? pollOptions,
     bool? isLiked,
     int? likeCount,
+    int? commentCount,
   }) {
     return PostModel(
       id: id ?? this.id,
@@ -114,6 +119,7 @@ class PostModel {
       pollOptions: pollOptions ?? this.pollOptions,
       isLiked: isLiked ?? this.isLiked,
       likeCount: likeCount ?? this.likeCount,
+      commentCount: commentCount ?? this.commentCount,
     );
   }
 }

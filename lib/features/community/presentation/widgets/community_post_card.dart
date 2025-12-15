@@ -110,7 +110,7 @@ class CommunityPostCard extends StatelessWidget {
                     children: [
                       const Icon(Icons.mode_comment_outlined),
                       const SizedBox(width: AppSpacing.smallPadding),
-                      Text('${0}'),
+                      Text('${post.commentCount}'),
                     ],
                   ),
                 ],

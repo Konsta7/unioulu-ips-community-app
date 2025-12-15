@@ -87,3 +87,11 @@ The Design documentation for the app can be found in the `design` folder of the 
 The product roadmap outlines the future features and improvements planned for the app. It includes ideated of upcoming releases, feature enhancements, and bug fixes.
 
 ![Product Roadmap](./design/Product%20roadmap.png)
+
+## Contributors
+
+|Contibutor|Date|
+|-------|-------|
+|Salman Rahman|Summer 2024|
+|Walter Määttä<br>Anssi Savallampi<br>Khizra Ghaffar<br>Kinza Ghaffar|Spring 2025|
+|Konsta Launonen<br>Jere Ainasoja<br>Jimi Gustafsson<br>Severi Sarala|Autumn 2025|

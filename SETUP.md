@@ -132,7 +132,8 @@ Appwrite requires you to add a platform to your project for CORS. You can add a 
 
 To automate the Appwrite configuration process, we have provided a Python script (appwrite_init.py) that sets up the necessary collections and attributes in your Appwrite database.
 
-Start with installing requirements:
+Start with installing requirements:  
+!!! FIRST CHANGE THE APPWRITE VERSION IN THE REQUIREMENTS.TXT TO 1.2.0 !!! It was changed to 3.0.0 so Dependabot would not alert.
 
 ```bash
 pip install -r requirements.txt
